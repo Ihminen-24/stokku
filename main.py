@@ -15,6 +15,13 @@ class Product():
     def update_stock(self, new_stock):
         self.stock = new_stock
 
+    def update_price(self,new_price):
+        self.price = new_price
+    
+    def update_name(self,new_product_name):
+        self.product_name = new_product_name
+
+
 
 
 class Inventory():
@@ -61,12 +68,19 @@ class Inventory():
         total_products = len(self.products)
         total_stock = 0
         out_of_stock = 0
+        low_stock = 0
         for product in self.products:
             total_stock = total_stock + product.stock
-
             if product.stock == 0:
                 out_of_stock = out_of_stock + 1
-        return total_products, total_stock, out_of_stock
+            if product.stock > 0 and product.stock <= 5:
+                low_stock = low_stock + 1
+        return total_products, total_stock, out_of_stock, low_stock
+
+    
+        
+
+        
 
 
 
@@ -85,11 +99,12 @@ inventori.stock_in("P-001",5)
 inventori.stock_out("P-001",4)
 inventori.stock_in("P-001",5)
 inventori.stock_out("P-001",20)
+keyboard.update_price(1400000)
+keyboard.update_name("Keyboard Razer BlackWidow")
+total_products, total_stock, out_of_stock,low_stock = inventori.generate_report()
 
-
-total_products, total_stock, out_of_stock = inventori.generate_report()
-
-print("Total Products:", total_products)
-print("Total Stock:", total_stock)
-print("Out of Stock:", out_of_stock)
+print("Total Products: ", total_products)
+print("Total Stock: ", total_stock)
+print("Out of Stock: ", out_of_stock)
+print("low_stock: ",low_stock )
 inventori.view_products()
