@@ -1,3 +1,6 @@
+from datetime import datetime
+
+
 class Product():
 
     def __init__(self,product_id,product_name,price,stock):
@@ -17,7 +20,7 @@ class Product():
 
     def update_price(self,new_price):
         self.price = new_price
-    
+
     def update_name(self,new_product_name):
         self.product_name = new_product_name
 
@@ -28,9 +31,13 @@ class Inventory():
 
     def __init__(self):
         self.products = []
+        self.transactions = []
 
     def add_product(self,product):
+        if self.search_product(product.product_id) is not None:
+            return print("ID tidak Boleh Sama")
         self.products.append(product)
+        return print("Produk berhasil ditambahkan")
 
     def view_products(self):
         for product in self.products:
@@ -43,16 +50,24 @@ class Inventory():
         return None
 
     def stock_in(self,product_id,quantity):
+        if quantity <=0:
+            print("Quantity harus lebih dari 0")
+            return
         product = self.search_product(product_id)
         if product is not None:
             product.display_info()
             new_stock = quantity + product.stock
             product.update_stock(new_stock)
+            transaction = Transaction("0001",self.search_product(product_id),quantity,"Stok Masuk")
+            self.transactions.append(transaction)
         else:
             print("Produk sudah habis")
 
 
     def stock_out(self,product_id,quantity):
+        if quantity <=0:
+            print("Quantity harus lebih dari 0")
+            return
         product = self.search_product(product_id)
         if product is not None:
             if quantity <= product.stock:
@@ -77,10 +92,25 @@ class Inventory():
                 low_stock = low_stock + 1
         return total_products, total_stock, out_of_stock, low_stock
 
-    
-        
 
-        
+
+class Transaction():
+
+    def __init__(self,transaction_id,product,quantity,transaction_type):
+        self.transaction_id = transaction_id
+        self.product = product
+        self.quantity = quantity
+        self.transaction_type = transaction_type
+        self.timestamp = datetime.now()
+
+
+
+
+
+
+
+
+
 
 
 
@@ -88,16 +118,19 @@ class Inventory():
 
 
 keyboard = Product("P-001","Keyboard Razer",1250000,10)
+earphone = Product("P-001", "Razer Kraken",1250000,5)
 #mouse = Product("P-002","Mouse Razer",675000,8)
 inventori = Inventory()
 #inventori.add_product(mouse)
 inventori.add_product(keyboard)
+inventori.add_product(earphone)
 #keyboard.update_stock(5)
 inventori.view_products()
 #result = inventori.search_product("P-099")
 inventori.stock_in("P-001",5)
 inventori.stock_out("P-001",4)
 inventori.stock_in("P-001",5)
+inventori.stock_in("P-991",5)
 inventori.stock_out("P-001",20)
 keyboard.update_price(1400000)
 keyboard.update_name("Keyboard Razer BlackWidow")
